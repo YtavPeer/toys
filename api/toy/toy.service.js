@@ -1,4 +1,5 @@
 const dbService = require('../../services/db.service')
+const utilService = require('../../services/util.service')
 const ObjectId = require('mongodb').ObjectId
 const asyncLocalStorage = require('../../services/als.service')
 
@@ -10,7 +11,7 @@ async function query(filterBy) {
         const collection = await dbService.getCollection('toy')
         var toys = await collection.find().toArray()
 
-        if(!filterBy){
+        if (!filterBy) {
             return toys
         }
         //filter name, type and stock
@@ -20,6 +21,11 @@ async function query(filterBy) {
                 (toy.type === filterBy.typeFilter || filterBy.typeFilter === 'all')
                 && (JSON.stringify(toy.inStock) === filterBy.stockFilter || filterBy.stockFilter === 'all')
         })
+        if (filterBy.sortBy === 'name') {
+            utilService.sortByName(toysForDisplay)
+        }else{
+            utilService.sortByPrice(toysForDisplay)
+        }
         return toysForDisplay
 
     } catch (error) {

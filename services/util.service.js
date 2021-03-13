@@ -1,5 +1,7 @@
 module.exports = {
       makeId,
+      sortByName,
+      sortByPrice
   }
 
 
@@ -16,4 +18,16 @@ function getRandomInt(min, max) {
       min = Math.ceil(min);
       max = Math.floor(max);
       return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
+}
+
+function sortByName(toys) {
+      return toys.sort((a, b) => {
+            return a.name.localeCompare(b.name)
+      })
+}
+
+function sortByPrice(toys) {
+      return toys.sort((a, b) => {
+            return parseFloat(a.price) - parseFloat(b.price)
+      })
 }
