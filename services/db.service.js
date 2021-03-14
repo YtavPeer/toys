@@ -7,6 +7,7 @@ module.exports = {
 }
 
 // Database Name
+//in prod need to be toyDB
 const dbName = 'my_db'
 
 var dbConn = null

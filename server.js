@@ -44,13 +44,11 @@ app.all('*', setupAsyncLocalStorage)
 
 
 
-
 app.use('/api/auth', authRoutes)
 app.use('/api/review', reviewRoutes)
 app.use('/api/user', userRoutes)
 app.use('/api/toy', toyRoutes)
 connectSockets(http, session)
-
 
 
 

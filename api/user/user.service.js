@@ -48,7 +48,6 @@ async function getById(userId) {
     }
 }
 
-
 async function getByUsername(username) {
     try {
         const collection = await dbService.getCollection('user')

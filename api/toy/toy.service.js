@@ -75,15 +75,10 @@ async function update(toy) {
         collection.updateOne({ '_id': toyToSave._id }, { $set: toyToSave })
         // console.log('the toy to save in service after apdate is:', toyToSave)
         return toyToSave;
-
-
     }
     catch (err) {
-
-
         logger.error(`cannot update toy ${toy._id}`, err)
         throw err
-
     }
 
 }

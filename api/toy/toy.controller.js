@@ -65,7 +65,6 @@ async function getToyById(req, res) {
 //need to inplement add review 
 async function addReview(req, res) {
     try {
-
         var review = req.body
         review._id = utilService.makeId()
         let toy = await toyService.getById(req.params.id)
@@ -74,8 +73,6 @@ async function addReview(req, res) {
         // console.log('the updated toy is back from server to controller is:', toy)
         //res.sendStatus(200);
         res.send(toy);
-
-
     } catch (err) {
         logger.error('Failed to update toy', err)
         res.status(500).send({ err: 'Failed to update toy' })

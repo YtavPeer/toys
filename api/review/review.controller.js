@@ -3,6 +3,8 @@ const userService = require('../user/user.service')
 const reviewService = require('./review.service')
 
 async function getReviews(req, res) {
+    // let filterBy = req.query
+    // console.log('in the controller we got', filterBy)
     try {
         const reviews = await reviewService.query(req.query)
         res.send(reviews)
@@ -26,11 +28,16 @@ async function deleteReview(req, res) {
 async function addReview(req, res) {
     try {
         var review = req.body
+        
         review.byUserId = req.session.user._id
+        console.log('the user id is',req.session.user._id)
+
+        console.log('this is the review in the controller', review)
+
         review = await reviewService.add(review)
-        review.byUser = req.session.user
-        review.aboutUser = await userService.getById(review.aboutUserId)
         res.send(review)
+        // review.byUser = req.session.user
+        // review.aboutUser = await userService.getById(review.aboutUserId)
 
     } catch (err) {
         logger.error('Failed to add review', err)
