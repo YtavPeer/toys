@@ -2,6 +2,8 @@
 
 const asyncLocalStorage = require('./als.service');
 const logger = require('./logger.service');
+const toyService = require('../api/toy/toy.service')
+
 
 var gIo = null
 var gSocketBySessionIdMap = {}
@@ -15,17 +17,23 @@ function connectSockets(http, session) {
         autoSave: true
     }));
     gIo.on('connection', socket => {
+
+        console.log('the connection in socket service in backend is')
+
         // console.log('socket.handshake', socket.handshake)
         gSocketBySessionIdMap[socket.handshake.sessionID] = socket
         // TODO: emitToUser feature - need to tested for CaJan21
         // if (socket.handshake?.session?.user) socket.join(socket.handshake.session.user._id)
         socket.on('disconnect', socket => {
-            console.log('Someone disconnected')
+            console.log('Someone disconnected', socket)
             if (socket.handshake) {
                 gSocketBySessionIdMap[socket.handshake.sessionID] = null
             }
         })
         socket.on('chat topic', topic => {
+
+            console.log('we got connect to chat topic in socket service:', topic)
+
             if (socket.myTopic === topic) return;
             if (socket.myTopic) {
                 socket.leave(socket.myTopic)
@@ -39,9 +47,27 @@ function connectSockets(http, session) {
             // gIo.emit('chat addMsg', msg)
             // emits only to sockets in the same room
             gIo.to(socket.myTopic).emit('chat addMsg', msg)
+            //add history to toy db
+            addToyHistory(socket.myTopic, msg)
+        })
+        socket.on('user typing', fromUser => {
+            // emits to all sockets:
+            // gIo.emit('chat addMsg', msg)
+            // emits only to sockets in the same room
+            console.log('in the backend got typing from:', fromUser)
+            socket.broadcast.to(socket.myTopic).emit('user is typing', fromUser)
+            // gIo.to(socket.myTopic).emit('user is typing', fromUser)
         })
 
     })
+}
+
+async function addToyHistory(toyId, msg) {
+    let toy = await toyService.getById(toyId)
+    console.log('the tou we got is', toy)
+    toy.history.push(msg)
+    toyService.update(toy);
+    console.log('finish updating')
 }
 
 function emit({ type, data }) {
